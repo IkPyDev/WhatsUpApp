@@ -6,10 +6,11 @@ import com.ikpydev.domain.model.User
 import com.ikpydev.presentation.base.BaseFragment
 import com.ikpydev.presentation.databinding.FragmentPhoneBinding
 import com.ikpydev.presentation.screens.phone.PhoneViewModel.Effect
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PhoneFragment : BaseFragment<FragmentPhoneBinding>(FragmentPhoneBinding::inflate) {
 
-    private lateinit var viewModel: PhoneViewModel
+    private val viewModel: PhoneViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

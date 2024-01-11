@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.ikpydev.whatsupapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.ikpydev.whatsupapp"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -39,6 +39,13 @@ dependencies {
     implementation project(":data")
     implementation project(":domain")
     implementation project(":presentation")
+
+
+    //add koin
+    implementation "io.insert-koin:koin-android:3.2.2"
+
+    //add cicerone
+    implementation 'com.github.terrakok:cicerone:7.1'
 
 
     implementation 'androidx.core:core-ktx:1.9.0'
