@@ -10,11 +10,14 @@ import com.ikpydev.data.remote.auth.AuthFirebase
 import com.ikpydev.data.remote.auth.AuthFirebaseImpl
 import com.ikpydev.data.repo.AuthRepositoryImpl
 import com.ikpydev.data.repo.SettingsRepositoryImpl
+import com.ikpydev.domain.model.ActivityHolder
 import com.ikpydev.domain.repo.AuthRepository
 import com.ikpydev.domain.repo.SettingsRepository
 import com.ikpydev.domain.usecase.auth.SendSmsCodeUseCase
-import com.ikpydev.domain.usecase.settings.GetOnboardedUseCase
+import com.ikpydev.domain.usecase.auth.VerifyCodeUseCase
+import com.ikpydev.domain.usecase.settings.GetInitialScreenUseCase
 import com.ikpydev.domain.usecase.settings.OnboardedUseCase
+import com.ikpydev.presentation.screens.code.CodeViewModel
 import com.ikpydev.presentation.screens.main.MainViewModel
 import com.ikpydev.presentation.screens.onboarded.OnboardedViewModel
 import com.ikpydev.presentation.screens.phone.PhoneViewModel
@@ -32,6 +35,7 @@ val appModule = module {
     single { cicerone.router }
     single { cicerone.getNavigatorHolder() }
     single { Realm.open(config) }
+    single { ActivityHolder() }
 }
 
 val repositoryModule = module {
@@ -45,7 +49,8 @@ val useCaseModule = module {
     single { SendSmsCodeUseCase(get()) }
 
     single { OnboardedUseCase(get()) }
-    single { GetOnboardedUseCase(get()) }
+    single { GetInitialScreenUseCase(get(), get()) }
+    single { VerifyCodeUseCase(get()) }
 }
 
 val localModel = module {
@@ -54,12 +59,13 @@ val localModel = module {
 }
 
 val remoteModule = module {
-    single<AuthFirebase> { AuthFirebaseImpl() }
+    single<AuthFirebase> { AuthFirebaseImpl(get()) }
 }
 
 val viewModel = module {
-    viewModel { PhoneViewModel(get()) }
-    viewModel { MainViewModel(get(),get()) }
-    viewModel { OnboardedViewModel(get(),get()) }
+    viewModel { PhoneViewModel(get(), get()) }
+    viewModel { MainViewModel(get(), get()) }
+    viewModel { OnboardedViewModel(get(), get()) }
+    viewModel { CodeViewModel(get(), get()) }
 }
 

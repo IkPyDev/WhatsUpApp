@@ -44,6 +44,10 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 
+    //add firebase auth
+
+    implementation 'com.google.firebase:firebase-auth-ktx:22.3.0'
+
 
 
     implementation 'androidx.core:core-ktx:1.9.0'

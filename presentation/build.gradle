@@ -51,6 +51,10 @@ dependencies {
     //add splash screen
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
+    // add OTP View
+
+    implementation 'com.github.aabhasr1:OtpView:v1.1.2-ktx' // kotlin
+
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

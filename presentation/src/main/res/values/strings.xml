@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Messenger</string>
     <string name="continue_on">Continue</string>
+    <string name="sing_in">Sign In</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="verify">Verify</string>
+    <string name="otp">Enter OTP code</string>
+    <string name="send_code">Code has been sent to %s</string>
+    <string name="otp_error_code">Invalid OTP code</string>
+    <string name="phone_error">Error sending Code</string>
+    <string name="code_error">"Error verifying code "</string>
 </resources>
