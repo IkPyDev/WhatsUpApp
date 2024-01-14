@@ -40,12 +40,12 @@ class PhoneViewModel constructor(
     private fun sendCode(phone: String) = sendSmsCodeUseCase(phone)
         .doOnSubscribe {
             updateState { it.copy(loading = true) }
-        }.doOnError {
-            emitEffects(Effect.Error)
         }.doOnComplete {
             router.navigateTo(CodeScreen(phone))
         }.doFinally {
             updateState { it.copy(loading = false) }
-        }.subscribe()
+        }.subscribe({},{
+            emitEffects(Effect.Error)
+        })
 
 }

@@ -19,7 +19,7 @@ class PhoneFragment : BaseFragment<FragmentPhoneBinding>(FragmentPhoneBinding::i
         super.onViewCreated(view, savedInstanceState)
 
         initUI()
-        viewModel.effect.doOnNext(::handlerEffects)
+        viewModel.effect.subscribe(::handlerEffects)
         viewModel.state.observe(::renderLoading) { it.loading }
 
     }

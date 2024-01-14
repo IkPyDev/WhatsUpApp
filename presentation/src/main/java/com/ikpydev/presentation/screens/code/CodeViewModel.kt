@@ -13,7 +13,10 @@ class CodeViewModel(
     private val router: Router
 ) : BaseViewModel<State, Input, Effect>() {
 
-    class State
+    data class State(
+        val loading: Boolean = false
+    )
+
     sealed class Input {
         data class Verify(val code: String) : Input()
     }
@@ -30,14 +33,21 @@ class CodeViewModel(
         }
     }
 
-    private fun verify(code: String) = verifyCodeUseCase.invoke(code)
-        .doOnError {
-            emitEffects(Effect.Error)
-        }.onErrorComplete {
-            emitEffects(Effect.Error)
-            true
-        }.doOnComplete {
-            router.navigateTo(HomeScreen())
-        }.subscribe()
+    private fun verify(code: String) = verifyCodeUseCase(code)
+        .doOnSubscribe {
+            updateState { it.copy(loading = true) }
+        }
+        .doFinally {
+            updateState { it.copy(loading = false) }
+        }
+        .subscribe(
+            {
 
+                router.navigateTo(HomeScreen())
+            },
+            { _ ->
+                emitEffects(Effect.Error)
+
+            }
+        )
 }

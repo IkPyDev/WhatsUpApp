@@ -9,4 +9,5 @@
     <string name="otp_error_code">Invalid OTP code</string>
     <string name="phone_error">Error sending Code</string>
     <string name="code_error">"Error verifying code "</string>
+    <string name="chat_message_hint">Message...</string>
 </resources>

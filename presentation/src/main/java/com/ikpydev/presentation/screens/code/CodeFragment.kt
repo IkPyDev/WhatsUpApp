@@ -21,18 +21,25 @@ class CodeFragment(
 
         initUi()
         viewModel.effect.subscribe(::handEffects)
+        viewModel.state.observe(::renderLoading){it.loading}
 
+    }
+
+    private fun renderLoading(loading: Boolean) = with(binding) {
+        progress.isVisible = loading
+        verify.text = getText(R.string.verify).takeIf { loading.not() }
     }
 
     private fun handEffects(effect: Effect) = with(binding) {
 
         when(effect){
-            Effect.Error -> {
-                snackbar(R.string.code_error)
-                error.isVisible= true
-                otpView.showError()
 
-            }
+            Effect.Error -> {
+            snackbar(R.string.code_error)
+            error.isVisible= true
+            otpView.showError()
+
+        }
         }
     }
 

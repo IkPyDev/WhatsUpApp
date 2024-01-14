@@ -71,5 +71,15 @@
         android:text="@string/verify"
         app:cornerRadius="32dp"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/verify"
+        app:layout_constraintEnd_toEndOf="@id/verify"
+        app:layout_constraintStart_toStartOf="@id/verify"
+        app:layout_constraintTop_toTopOf="@id/verify" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

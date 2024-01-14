@@ -1,5 +1,8 @@
 package com.ikpydev.domain.model
 
 data class User(
-    val phone: String
+    var id:String,
+    val phone:String ,
+    val name :String,
+    val avatar:String?
 )

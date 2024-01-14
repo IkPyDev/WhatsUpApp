@@ -48,6 +48,9 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-auth-ktx:22.3.0'
 
+    // add FireStore
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
+
 
 
     implementation 'androidx.core:core-ktx:1.9.0'
