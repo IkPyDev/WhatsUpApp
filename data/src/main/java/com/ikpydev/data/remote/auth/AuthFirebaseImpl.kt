@@ -37,7 +37,7 @@ class AuthFirebaseImpl(
 
             override fun onCodeSent(
                 verifierId: String,
-                token: PhoneAuthProvider.ForceResendingToken
+                token: ForceResendingToken
             ) {
                 this@AuthFirebaseImpl.token = token
                 this@AuthFirebaseImpl.verificationId = verifierId
@@ -73,4 +73,6 @@ class AuthFirebaseImpl(
 
     override val isLoggedIn: Boolean
         get() = auth.currentUser != null
+    override val userId: String?
+        get() = auth.currentUser?.uid
 }

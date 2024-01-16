@@ -5,6 +5,7 @@ import android.view.View
 import com.ikpydev.domain.model.Chat
 import com.ikpydev.presentation.base.BaseFragment
 import com.ikpydev.presentation.databinding.FragmentHomeBinding
+import com.ikpydev.presentation.screens.home.HomeViewModel.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -28,7 +29,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun renderChats(chats: List<Chat>) {
-        binding.chats.adapter = ChatAdapter(chats)
+        binding.chats.adapter = ChatAdapter(chats,::onClick)
+
+    }
+    private fun onClick(chat: Chat){
+        viewModel.processInput(Input.OpenChat(chat))
 
     }
 }

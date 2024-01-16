@@ -8,13 +8,16 @@ import com.ikpydev.domain.model.Chat
 import com.ikpydev.presentation.R
 import com.ikpydev.presentation.databinding.ItemChatsBinding
 
-class ChatAdapter(private val chats: List<Chat>) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+class ChatAdapter(private val chats: List<Chat>,private val onClick:(chat:Chat)->Unit) : RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: ItemChatsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(chat: Chat) = with(binding) {
             Glide.with(root).load(R.drawable.ic_person).into(avatar)
             name.text = chat.user.name
             phone.text = chat.user.phone
+            root.setOnClickListener {
+                onClick(chat)
+            }
 
         }
     }

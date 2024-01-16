@@ -3,11 +3,14 @@ package com.ikpydev.data.remote.users
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.ikpydev.data.remote.auth.AuthFirebase
 import com.ikpydev.data.remote.users.model.UserDocument
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
-class UsersFireStoreImpl : UsersFireStore {
+class UsersFireStoreImpl(
+    private val authFirebase: AuthFirebase
+) : UsersFireStore {
 
     private val users = Firebase.firestore.collection("users")
     override fun setUser(user: FirebaseUser): Completable = Completable.create { emitter ->
@@ -32,7 +35,7 @@ class UsersFireStoreImpl : UsersFireStore {
         }.addOnSuccessListener {snapshot->
             val userDocument =snapshot.documents.mapNotNull {
                 it.toObject(UserDocument::class.java)
-            }
+            }.filter { it.id != authFirebase.userId }
             emitter.onSuccess(userDocument)
         }
 

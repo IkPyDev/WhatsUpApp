@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/TextAppearance.MaterialComponents.Subtitle1"
     android:layout_width="match_parent"
+    android:id="@+id/text"
     android:gravity="end"
     android:layout_height="wrap_content"
     android:padding="4dp"

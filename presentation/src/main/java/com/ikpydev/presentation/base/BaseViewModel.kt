@@ -16,6 +16,8 @@ abstract class BaseViewModel<State : Any, Input : Any, Effect : Any> : ViewModel
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
 
+    val current: State get() = stateSubject.blockingFirst()
+
 
     abstract fun getDefaultState(): State
 
