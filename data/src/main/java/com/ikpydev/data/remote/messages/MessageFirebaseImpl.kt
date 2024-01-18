@@ -1,5 +1,6 @@
 package com.ikpydev.data.remote.messages
 
+import android.net.Uri
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import io.reactivex.rxjava3.core.Completable
@@ -28,6 +29,22 @@ class MessageFirebaseImpl : MessagesFireBase {
             .addOnFailureListener { emitter.onError(it) }
             .addOnSuccessListener { emitter.onComplete() }
     }
+
+    override fun senMessage(fromUserId: String, toUserId: String, image: Uri): Completable =
+        Completable.create { emitter ->
+            val messageDocument = MessageDocument(
+                id = UUID.randomUUID().toString(),
+                image = image.toString(),
+                time = Date(),
+                members = listOf(fromUserId, toUserId).sorted().joinToString(),
+                from = fromUserId,
+                to = toUserId
+
+            )
+            messages.document(messageDocument.id!!).set(messageDocument)
+                .addOnFailureListener { emitter.onError(it) }
+                .addOnSuccessListener { emitter.onComplete() }
+        }
 
     override fun getMessage(
         firstUser: String,

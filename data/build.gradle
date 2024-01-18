@@ -51,6 +51,14 @@ dependencies {
     // add FireStore
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
 
+    //add FireStorage
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+
+    // add FCM
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.4.0'
+
+
+
 
 
     implementation 'androidx.core:core-ktx:1.9.0'
