@@ -8,6 +8,7 @@ fun UserDocument.toUser():User?{
         id = id ?: return null,
         phone = phone ?: return null,
         name = name ?: return null,
-        avatar = avatar
+        avatar = avatar,
+        token = token
     )
 }

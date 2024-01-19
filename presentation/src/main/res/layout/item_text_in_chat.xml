@@ -6,7 +6,11 @@
     android:layout_height="wrap_content"
     android:id="@+id/text"
     android:layout_marginVertical="2dp"
-    android:background="@drawable/text_bg"
+    android:layout_marginHorizontal="4dp"
     android:gravity="start"
-    android:padding="6dp"
+    android:background="@drawable/text_bg_in"
+
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp"
+    android:textSize="@dimen/chat_text_size"
     tools:text="Hello" />

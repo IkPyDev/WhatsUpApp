@@ -3,6 +3,7 @@ package com.ikpydev.presentation.screens.chat
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import com.bumptech.glide.Glide
 import com.ikpydev.domain.model.Chat
 import com.ikpydev.domain.model.Message
 import com.ikpydev.presentation.base.BaseFragment
@@ -32,6 +33,10 @@ class ChatFragment(
     }
 
     private fun initUi() = with(binding) {
+
+        Glide.with(root).load(chat.user.avatar).into(avatar)
+        name.text = chat.user.name
+
 
         gallery.setOnClickListener {
             galleryLauncher.launch("image/*")

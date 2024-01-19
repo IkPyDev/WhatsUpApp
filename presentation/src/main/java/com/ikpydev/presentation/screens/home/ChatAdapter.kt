@@ -12,7 +12,10 @@ class ChatAdapter(private val chats: List<Chat>,private val onClick:(chat:Chat)-
     inner class ViewHolder(private val binding: ItemChatsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(chat: Chat) = with(binding) {
-            Glide.with(root).load(R.drawable.ic_person).into(avatar)
+            val icon = if (chat.user.avatar != null) {
+                chat.user.avatar?.toString()
+            } else R.drawable.ic_person
+            Glide.with(root).load(icon).into(avatar)
             name.text = chat.user.name
             phone.text = chat.user.phone
             root.setOnClickListener {

@@ -58,7 +58,7 @@ class ChatViewModel(
             emitEffects(Effect.ErrorGetting)
         })
 
-    private fun senMessage(message: String) = sendMessageUseCase(current.chat!!.user.id, message)
+    private fun senMessage(message: String) = sendMessageUseCase(current.chat!!.user, message)
         .subscribe({}, {
             emitEffects(Effect.ErrorSending)
         })
@@ -81,7 +81,7 @@ class ChatViewModel(
         messages.add(message)
         updateState { it.copy(messages = messages) }
         viewModelScope.launch(Dispatchers.IO) {
-            sendImageUseCase(current.chat!!.user.id, stream)
+            sendImageUseCase(current.chat!!.user, stream)
                 .subscribe({}, {})
         }
     }
