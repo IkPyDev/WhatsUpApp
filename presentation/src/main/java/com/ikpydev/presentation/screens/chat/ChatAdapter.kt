@@ -12,6 +12,8 @@ import com.ikpydev.presentation.databinding.ItemImageInChatBinding
 import com.ikpydev.presentation.databinding.ItemImageOutChatBinding
 import com.ikpydev.presentation.databinding.ItemTextInChatBinding
 import com.ikpydev.presentation.databinding.ItemTextOutChatBinding
+import com.ikpydev.presentation.databinding.ItemVoiceInChatBinding
+import com.ikpydev.presentation.databinding.ItemVoiceOutChatBinding
 
 class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
 
@@ -33,6 +35,20 @@ class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) = with(binding) {
             Glide.with(root).load(message.image).into(image)
+        }
+    }
+
+    inner class VoiceOutViewHolder(private val binding: ItemVoiceOutChatBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) = with(binding) {
+            voicePlayerView.setAudio(message.voice.toString())
+        }
+    }
+
+    inner class VoiceInViewHolder(private val binding: ItemVoiceInChatBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message) = with(binding) {
+            voicePlayerView.setAudio(message.voice.toString())
         }
     }
 
@@ -76,6 +92,18 @@ class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
             Type.image_out -> ImageUploadViewHolder(
                 ItemImageOutChatBinding.inflate(inflater, parent, false)
             )
+
+            Type.voice_upload -> VoiceOutViewHolder(
+                ItemVoiceOutChatBinding.inflate(inflater, parent, false)
+            )
+
+            Type.voice_in -> VoiceInViewHolder(
+                ItemVoiceInChatBinding.inflate(inflater, parent, false)
+            )
+
+            Type.voice_out -> VoiceOutViewHolder(
+                ItemVoiceOutChatBinding.inflate(inflater, parent, false)
+            )
         }
     }
 
@@ -85,6 +113,8 @@ class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
             is TextOutViewHolder -> holder.bind(getItem(position))
             is ImageUploadViewHolder -> holder.bind(getItem(position))
             is ImageInViewHolder -> holder.bind(getItem(position))
+            is VoiceOutViewHolder -> holder.bind(getItem(position))
+            is VoiceInViewHolder -> holder.bind(getItem(position))
         }
     }
 

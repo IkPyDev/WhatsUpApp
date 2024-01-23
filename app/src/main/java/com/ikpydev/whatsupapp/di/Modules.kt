@@ -11,6 +11,8 @@ import com.ikpydev.data.remote.auth.AuthFirebase
 import com.ikpydev.data.remote.auth.AuthFirebaseImpl
 import com.ikpydev.data.remote.files.ImageStorage
 import com.ikpydev.data.remote.files.ImageStorageImpl
+import com.ikpydev.data.remote.files.VoiceStorage
+import com.ikpydev.data.remote.files.VoiceStorageImpl
 import com.ikpydev.data.remote.messages.MessageFirebaseImpl
 import com.ikpydev.data.remote.messages.MessagesFireBase
 import com.ikpydev.data.remote.push.PushVolley
@@ -30,6 +32,7 @@ import com.ikpydev.domain.usecase.chat.GetChatsUseCase
 import com.ikpydev.domain.usecase.chat.GetMessageUseCase
 import com.ikpydev.domain.usecase.chat.SendImageUseCase
 import com.ikpydev.domain.usecase.chat.SendMessageUseCase
+import com.ikpydev.domain.usecase.chat.SendVoiceUseCase
 import com.ikpydev.domain.usecase.settings.GetInitialScreenUseCase
 import com.ikpydev.domain.usecase.settings.OnboardedUseCase
 import com.ikpydev.presentation.screens.chat.ChatViewModel
@@ -61,7 +64,7 @@ val repositoryModule = module {
 
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
-    single<ChatRepository> { ChatRepositoryImpl(get(), get(), get(), get(), get()) }
+    single<ChatRepository> { ChatRepositoryImpl(get(), get(), get(), get(), get(),get()) }
 }
 
 
@@ -75,6 +78,7 @@ val useCaseModule = module {
     single { SendMessageUseCase(get()) }
     single { GetMessageUseCase(get()) }
     single { SendImageUseCase(get()) }
+    single { SendVoiceUseCase(get()) }
 }
 
 val localModel = module {
@@ -87,7 +91,9 @@ val remoteModule = module {
     single<UsersFireStore> { UsersFireStoreImpl(get()) }
     single<MessagesFireBase> { MessageFirebaseImpl() }
     single<ImageStorage> { ImageStorageImpl() }
+    single<VoiceStorage> { VoiceStorageImpl() }
     single<PushVolley> { PushVolleyImpl(get()) }
+
 }
 
 val viewModel = module {
@@ -96,6 +102,6 @@ val viewModel = module {
     viewModel { OnboardedViewModel(get(), get()) }
     viewModel { CodeViewModel(get(), get()) }
     viewModel { HomeViewModel(get(),get()) }
-    viewModel { ChatViewModel(get(), get(),get()) }
+    viewModel { ChatViewModel(get(), get(),get(),get()) }
 }
 

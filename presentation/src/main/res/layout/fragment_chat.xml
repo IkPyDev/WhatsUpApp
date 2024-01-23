@@ -31,6 +31,8 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="8dp"
         android:elevation="0dp"
+        app:strokeWidth="0dp"
+        app:strokeColor="@null"
         app:cardCornerRadius="50dp"
 
         app:layout_constraintBottom_toBottomOf="@id/container"
@@ -38,10 +40,11 @@
         tools:src="@tools:sample/backgrounds/scenic">
 
         <ImageView
+            android:elevation="0dp"
             android:id="@+id/avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             tools:src="@tools:sample/backgrounds/scenic" />
 
 
@@ -58,6 +61,17 @@
         app:layout_constraintStart_toEndOf="@id/avatarContainer"
         app:layout_constraintTop_toTopOf="@id/avatarContainer"
         tools:text="Martha Craig" />
+
+    <TextView
+        android:id="@+id/phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:maxLines="1"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toEndOf="@id/avatarContainer"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        tools:text="+998 99 345 18 12" />
 
     <ImageView
         android:id="@+id/video_call"
@@ -85,9 +99,11 @@
         android:id="@+id/messages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:paddingHorizontal="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/message"
+        app:layout_goneMarginBottom="44dp"
         android:paddingVertical="12dp"
         app:stackFromEnd="true"
 
@@ -95,11 +111,18 @@
         app:layout_constraintTop_toBottomOf="@id/container"
         tools:listitem="@layout/item_text_in_chat" />
 
+    <include
+        android:elevation="8dp"
+        android:id="@+id/progress"
+        layout="@layout/view_loading" />
+
     <ImageButton
         android:id="@+id/gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_margin="8dp"
+        android:visibility="visible"
+
         android:backgroundTint="?attr/colorOnPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -108,24 +131,31 @@
     <EditText
         android:id="@+id/message"
         android:layout_width="0dp"
+
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue_1"
         android:layout_marginBottom="8dp"
         android:hint="@string/chat_message_hint"
+        android:visibility="visible"
 
         android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/send"
+        app:layout_goneMarginEnd="46dp"
 
         app:layout_constraintStart_toEndOf="@id/gallery" />
 
     <ImageButton
         android:id="@+id/send"
-        android:layout_width="wrap_content"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:backgroundTint="?attr/colorOnPrimary"
 
-        android:layout_height="wrap_content"
+        android:src="@drawable/ic_audio"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_send"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

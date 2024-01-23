@@ -13,15 +13,20 @@ fun MessageDocument.toMessage(userId: String): Message? {
         type = when (from) {
             userId -> when {
                 image != null -> Type.image_out
+                voice != null -> Type.voice_out
                 else -> Type.text_out
             }
+
             else -> when {
                 image != null -> Type.image_in
+                voice != null -> Type.voice_in
+
                 else -> Type.text_in
 
             }
         },
-        image = image?.let { Uri.parse(image) }
+        image = image?.let { Uri.parse(image) },
+        voice = voice?.let { Uri.parse(voice) }
 
 
     )

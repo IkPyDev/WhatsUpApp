@@ -12,5 +12,6 @@ interface ChatRepository {
     fun getChats(): Single<List<Chat>>
     fun sendMessage(to: User, message: String): Completable
     fun sendMessage(to: User, image: InputStream): Completable
+    fun sendMessageVoice(to: User, voice: InputStream): Completable
     fun getMessage(with: String): Observable<List<Message>>
 }

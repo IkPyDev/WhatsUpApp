@@ -46,6 +46,22 @@ class MessageFirebaseImpl : MessagesFireBase {
                 .addOnSuccessListener { emitter.onComplete() }
         }
 
+    override fun senMessageVoice(fromUserId: String, toUserId: String, voice: Uri): Completable=
+        Completable.create { emitter ->
+            val messageDocument = MessageDocument(
+                id = UUID.randomUUID().toString(),
+                voice = voice.toString(),
+                time = Date(),
+                members = listOf(fromUserId, toUserId).sorted().joinToString(),
+                from = fromUserId,
+                to = toUserId
+
+            )
+            messages.document(messageDocument.id!!).set(messageDocument)
+                .addOnFailureListener { emitter.onError(it) }
+                .addOnSuccessListener { emitter.onComplete() }
+        }
+
     override fun getMessage(
         firstUser: String,
         secondUser: String
