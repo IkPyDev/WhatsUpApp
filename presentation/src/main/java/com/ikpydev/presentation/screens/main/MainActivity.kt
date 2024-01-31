@@ -28,6 +28,7 @@ class MainActivity : FragmentActivity() {
         activityHolder.activity = this
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
     }
 
     override fun onResumeFragments() {

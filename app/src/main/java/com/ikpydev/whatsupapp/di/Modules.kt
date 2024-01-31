@@ -13,6 +13,8 @@ import com.ikpydev.data.remote.files.ImageStorage
 import com.ikpydev.data.remote.files.ImageStorageImpl
 import com.ikpydev.data.remote.files.VoiceStorage
 import com.ikpydev.data.remote.files.VoiceStorageImpl
+import com.ikpydev.data.remote.groups.GroupsFireStore
+import com.ikpydev.data.remote.groups.GroupsFireStoreImpl
 import com.ikpydev.data.remote.messages.MessageFirebaseImpl
 import com.ikpydev.data.remote.messages.MessagesFireBase
 import com.ikpydev.data.remote.push.PushVolley
@@ -21,10 +23,12 @@ import com.ikpydev.data.remote.users.UsersFireStore
 import com.ikpydev.data.remote.users.UsersFireStoreImpl
 import com.ikpydev.data.repo.AuthRepositoryImpl
 import com.ikpydev.data.repo.ChatRepositoryImpl
+import com.ikpydev.data.repo.GroupsChatRepositoryImpl
 import com.ikpydev.data.repo.SettingsRepositoryImpl
 import com.ikpydev.domain.model.ActivityHolder
 import com.ikpydev.domain.repo.AuthRepository
 import com.ikpydev.domain.repo.ChatRepository
+import com.ikpydev.domain.repo.GroupsChatRepository
 import com.ikpydev.domain.repo.SettingsRepository
 import com.ikpydev.domain.usecase.auth.SendSmsCodeUseCase
 import com.ikpydev.domain.usecase.auth.VerifyCodeUseCase
@@ -33,11 +37,14 @@ import com.ikpydev.domain.usecase.chat.GetMessageUseCase
 import com.ikpydev.domain.usecase.chat.SendImageUseCase
 import com.ikpydev.domain.usecase.chat.SendMessageUseCase
 import com.ikpydev.domain.usecase.chat.SendVoiceUseCase
+import com.ikpydev.domain.usecase.group.GetGroupsChatsUseCase
 import com.ikpydev.domain.usecase.settings.GetInitialScreenUseCase
 import com.ikpydev.domain.usecase.settings.OnboardedUseCase
 import com.ikpydev.presentation.screens.chat.ChatViewModel
 import com.ikpydev.presentation.screens.code.CodeViewModel
 import com.ikpydev.presentation.screens.home.HomeViewModel
+import com.ikpydev.presentation.screens.home.chats.HomeChatsViewModel
+import com.ikpydev.presentation.screens.home.groups.HomeGroupsViewModel
 import com.ikpydev.presentation.screens.main.MainViewModel
 import com.ikpydev.presentation.screens.onboarded.OnboardedViewModel
 import com.ikpydev.presentation.screens.phone.PhoneViewModel
@@ -64,7 +71,8 @@ val repositoryModule = module {
 
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
-    single<ChatRepository> { ChatRepositoryImpl(get(), get(), get(), get(), get(),get()) }
+    single<ChatRepository> { ChatRepositoryImpl(get(), get(), get(), get(), get(), get()) }
+    single<GroupsChatRepository> { GroupsChatRepositoryImpl(get(), get()) }
 }
 
 
@@ -79,6 +87,7 @@ val useCaseModule = module {
     single { GetMessageUseCase(get()) }
     single { SendImageUseCase(get()) }
     single { SendVoiceUseCase(get()) }
+    single { GetGroupsChatsUseCase(get()) }
 }
 
 val localModel = module {
@@ -93,6 +102,8 @@ val remoteModule = module {
     single<ImageStorage> { ImageStorageImpl() }
     single<VoiceStorage> { VoiceStorageImpl() }
     single<PushVolley> { PushVolleyImpl(get()) }
+    single<GroupsFireStore> { GroupsFireStoreImpl(get()) }
+
 
 }
 
@@ -101,7 +112,9 @@ val viewModel = module {
     viewModel { MainViewModel(get(), get()) }
     viewModel { OnboardedViewModel(get(), get()) }
     viewModel { CodeViewModel(get(), get()) }
-    viewModel { HomeViewModel(get(),get()) }
-    viewModel { ChatViewModel(get(), get(),get(),get()) }
+    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { ChatViewModel(get(), get(), get(), get()) }
+    viewModel { HomeGroupsViewModel(get(), get()) }
+    viewModel { HomeChatsViewModel(get(), get()) }
 }
 

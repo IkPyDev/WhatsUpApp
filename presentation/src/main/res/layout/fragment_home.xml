@@ -5,14 +5,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chats"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabMode"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabIndicatorGravity="stretch"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorColor="@null"
+        app:tabIndicator="@drawable/tab_indicator"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabMode="fixed" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingVertical="10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_chats" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+
+        app:layout_constraintTop_toBottomOf="@id/tabMode" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/add"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/blue"
+        android:focusable="true"
+        android:padding="16dp"
+        android:src="@drawable/baseline_add_24"
+        app:fabCustomSize="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="32dp"
+        app:tint="@color/white" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

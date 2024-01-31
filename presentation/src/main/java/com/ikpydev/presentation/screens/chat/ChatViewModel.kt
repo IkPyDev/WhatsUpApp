@@ -6,7 +6,6 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Environment
 import androidx.core.net.toUri
-import androidx.lifecycle.viewModelScope
 import com.ikpydev.domain.model.Chat
 import com.ikpydev.domain.model.Message
 import com.ikpydev.domain.model.Type
@@ -18,8 +17,6 @@ import com.ikpydev.presentation.base.BaseViewModel
 import com.ikpydev.presentation.screens.chat.ChatViewModel.Effect
 import com.ikpydev.presentation.screens.chat.ChatViewModel.Input
 import com.ikpydev.presentation.screens.chat.ChatViewModel.State
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
 import java.io.InputStream
 import java.util.Date
@@ -32,7 +29,7 @@ class ChatViewModel(
     private val sendImageUseCase: SendImageUseCase
 ) : BaseViewModel<State, Input, Effect>() {
 
-    private lateinit var mediaRecord: MediaRecorder
+    private var mediaRecord: MediaRecorder? = null
     private var audioPath: String = ""
     private var isRecordingPaused: Boolean = false
 
@@ -95,10 +92,9 @@ class ChatViewModel(
         val messages = current.messages.toMutableList()
         messages.add(message)
         updateState { it.copy(messages = messages) }
-        viewModelScope.launch(Dispatchers.IO) {
             sendImageUseCase(current.chat!!.user, stream)
                 .subscribe({}, {})
-        }
+
     }
 
     private fun sendVoice(voice: Uri, stream: InputStream) {
@@ -109,10 +105,9 @@ class ChatViewModel(
         messages.add(message)
         updateState { it.copy(messages = messages) }
 
-        viewModelScope.launch(Dispatchers.IO) {
             sendVoiceUseCase(current.chat!!.user, stream)
                 .subscribe({}, {})
-        }
+
     }
 
     private fun setUser(chat: Chat) {
@@ -126,18 +121,18 @@ class ChatViewModel(
                 Environment.DIRECTORY_DOCUMENTS
             ).absolutePath + "/temp-" + Date().time + ".mp3"
         mediaRecord = MediaRecorder()
-        mediaRecord.setOutputFile(audioPath)
+        mediaRecord?.setOutputFile(audioPath)
     }
 
     fun mediaRecordStart() {
         try {
             mediaRecord = MediaRecorder()
-            mediaRecord.setOutputFile(audioPath)
-            mediaRecord.setAudioSource(MediaRecorder.AudioSource.MIC)
-            mediaRecord.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            mediaRecord.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            mediaRecord.prepare()
-            mediaRecord.start()
+            mediaRecord?.setOutputFile(audioPath)
+            mediaRecord?.setAudioSource(MediaRecorder.AudioSource.MIC)
+            mediaRecord?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            mediaRecord?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            mediaRecord?.prepare()
+            mediaRecord?.start()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -145,9 +140,9 @@ class ChatViewModel(
 
     fun mediaRecordStop(requireActivity: Activity) {
         try {
-            mediaRecord.stop()
-            mediaRecord.reset()
-            mediaRecord.release()
+            mediaRecord?.stop()
+            mediaRecord?.reset()
+            mediaRecord?.release()
             sendVoiceMes(File(audioPath).toUri(), requireActivity)
 
         } catch (e: Exception) {
@@ -157,7 +152,7 @@ class ChatViewModel(
 
     fun mediaRecorderPause() {
         try {
-            mediaRecord.pause()
+            mediaRecord?.pause()
             isRecordingPaused = true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -167,7 +162,7 @@ class ChatViewModel(
     fun mediaRecorderPlay() {
         try {
             if (isRecordingPaused)
-                mediaRecord.resume()
+                mediaRecord?.resume()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -175,11 +170,16 @@ class ChatViewModel(
 
     fun mediaRecorderCanceled() {
         try {
-            mediaRecord.reset()
+            mediaRecord?.reset()
             File(audioPath).delete()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun mediaRecorderDestroy() {
+        mediaRecord?.release()
+        mediaRecord = null
     }
 
     private fun sendVoiceMes(uri: Uri?, context: Context) {

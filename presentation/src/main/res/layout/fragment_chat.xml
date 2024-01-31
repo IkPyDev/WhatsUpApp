@@ -24,8 +24,11 @@
         app:layout_constraintBottom_toBottomOf="@id/container"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/avatarContainer"
+
+
+
+
+    <ImageView
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginStart="20dp"
@@ -37,18 +40,12 @@
 
         app:layout_constraintBottom_toBottomOf="@id/container"
         app:layout_constraintStart_toEndOf="@id/back"
-        tools:src="@tools:sample/backgrounds/scenic">
-
-        <ImageView
-            android:elevation="0dp"
-            android:id="@+id/avatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            tools:src="@tools:sample/backgrounds/scenic" />
+        android:id="@+id/avatar"
+        android:scaleType="fitXY"
+        tools:src="@tools:sample/backgrounds/scenic" />
 
 
-    </com.google.android.material.card.MaterialCardView>
+
 
     <TextView
         android:id="@+id/name"
@@ -58,8 +55,8 @@
         android:maxLines="2"
         android:textColor="@color/black"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/avatarContainer"
-        app:layout_constraintTop_toTopOf="@id/avatarContainer"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="@id/avatar"
         tools:text="Martha Craig" />
 
     <TextView
@@ -69,7 +66,7 @@
         android:layout_marginStart="10dp"
         android:maxLines="1"
         android:textColor="@color/gray"
-        app:layout_constraintStart_toEndOf="@id/avatarContainer"
+        app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toBottomOf="@id/name"
         tools:text="+998 99 345 18 12" />
 
@@ -141,7 +138,7 @@
         android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/send"
-        app:layout_goneMarginEnd="46dp"
+        app:layout_goneMarginEnd="58dp"
 
         app:layout_constraintStart_toEndOf="@id/gallery" />
 
@@ -151,11 +148,41 @@
         android:layout_height="36dp"
         android:backgroundTint="?attr/colorOnPrimary"
 
-        android:src="@drawable/ic_audio"
+        android:src="@drawable/ic_send"
         android:layout_margin="8dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+    <com.devlomi.record_view.RecordView
+        android:id="@+id/record_view"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="50dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:slide_to_cancel_arrow="@drawable/recv_ic_arrow"
+        app:slide_to_cancel_arrow_color="#000000"
+        app:slide_to_cancel_bounds="8dp"
+        app:slide_to_cancel_margin_right="10dp"
+        app:slide_to_cancel_text="Slide To Cancel"
+        app:counter_time_color="@color/blue_1"
+        />
+
+    <com.devlomi.record_view.RecordButton
+        android:id="@+id/record_button"
+        android:layout_width="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/record_bg"
+        android:scaleType="centerInside"
+        app:mic_icon="@drawable/recv_ic_mic_white" />
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

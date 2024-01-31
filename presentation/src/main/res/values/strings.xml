@@ -10,4 +10,7 @@
     <string name="phone_error">Error sending Code</string>
     <string name="code_error">"Error verifying code "</string>
     <string name="chat_message_hint">Message...</string>
+    <string name="name">Name..</string>
+    <string name="chats">Chats</string>
+    <string name="groups">Groups</string>
 </resources>

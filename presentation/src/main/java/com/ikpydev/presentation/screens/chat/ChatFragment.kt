@@ -1,42 +1,34 @@
 package com.ikpydev.presentation.screens.chat
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.media.MediaRecorder
-import android.net.Uri
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.devlomi.record_view.OnRecordListener
 import com.ikpydev.domain.model.Chat
 import com.ikpydev.domain.model.Message
-import com.ikpydev.presentation.R
 import com.ikpydev.presentation.base.BaseFragment
 import com.ikpydev.presentation.databinding.FragmentChatBinding
 import com.ikpydev.presentation.screens.chat.ChatViewModel.Input
-import com.ikpydev.presentation.utils.showAlert
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
 import java.io.InputStream
-import java.util.Date
+
 
 class ChatFragment(
     private val chat: Chat
 ) : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
     private val viewModel: ChatViewModel by viewModel()
     private val adapter = ChatAdapter()
-    private var audioPath: String = ""
     private var mediaState: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +50,7 @@ class ChatFragment(
         viewModel.state.observe(::renderLoading) { it.loading }
     }
 
-    private fun renderLoading(loading: Boolean)= with(binding) {
+    private fun renderLoading(loading: Boolean) = with(binding) {
 
 
         progress.root.isVisible = loading
@@ -109,19 +101,67 @@ class ChatFragment(
 //    }
 
 
-
-
     private fun renderMessage(messages: List<Message>) {
         adapter.submitList(messages)
     }
 
-    @SuppressLint("ResourceType")
     private fun initUi() = with(binding) {
 
-        Glide.with(root).load(chat.user.avatar).into(avatar)
+        Glide.with(root).load(chat.user.avatar).apply(RequestOptions.circleCropTransform())
+            .into(avatar)
         name.text = chat.user.name
         messages.adapter = adapter
         phone.text = chat.user.phone
+
+        recordButton.setRecordView(recordView)
+
+        recordButton.setScaleUpTo(1f)
+        recordView.setSoundEnabled(false)
+
+
+
+
+
+        recordView.setOnRecordListener(object : OnRecordListener {
+
+            override fun onStart() {
+                if (b().not()){
+                    ActivityCompat.requestPermissions(
+                        requireActivity(), arrayOf(
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ),
+                        0
+                    )
+                }else {
+                    funRecordBinding(false)
+                    viewModel.mediaRecordStart()
+                }
+            }
+
+            override fun onCancel() {
+                funRecordBinding(true)
+                viewModel.mediaRecorderCanceled()
+            }
+
+            override fun onFinish(recordTime: Long, limitReached: Boolean) {
+                funRecordBinding(true)
+
+                viewModel.mediaRecordStop(requireActivity())
+            }
+
+            override fun onLessThanSecond() {
+                funRecordBinding(true)
+
+                viewModel.mediaRecorderCanceled()
+            }
+
+            override fun onLock() {
+                //
+            }
+        })
+
 
 
 
@@ -141,90 +181,37 @@ class ChatFragment(
             override fun afterTextChanged(s: Editable?) {
 
                 if (message.text.toString().isEmpty()) {
-                    send.setImageResource(R.drawable.ic_audio)
-                    send.tag = R.drawable.ic_audio
+                    send.isVisible = false
+                    recordButton.isVisible = true
+
                 } else {
-                    send.setImageResource(R.drawable.ic_send)
-                    send.tag = R.drawable.ic_send
+                    send.isVisible = true
+                    recordButton.isVisible = false
                 }
 
             }
         })
 
-        send.tag = R.drawable.ic_audio
+
         send.setOnClickListener {
-            if (send.tag == R.drawable.ic_audio) {
 
 
-                Dexter.withContext(context).withPermissions(
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ).withListener(object : MultiplePermissionsListener {
-                    @SuppressLint("ResourceType")
-                    override fun onPermissionsChecked(permission: MultiplePermissionsReport?) {
-                        if (permission?.areAllPermissionsGranted() == true) {
-
-                            try {
-                                send.tag = R.drawable.ic_stop
-                                send.setImageResource(R.drawable.ic_stop)
-
-                                send.backgroundTintList =
-                                    resources.getColorStateList(R.drawable.stop_recoding)
-
-                                viewModel.mediaRecordStart()
-                                message.isEnabled = false
-                                this@ChatFragment.mediaState = true
-
-
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        } else {
-                            showAlert(
-                                requireContext(),
-                                "Permission denied",
-                                "Kindly allow access to all required permission"
-                            )
-                        }
-
-                    }
-
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        p0: MutableList<PermissionRequest>?,
-                        p1: PermissionToken?
-                    ) {
-
-                    }
-
-
-                }).check()
-            } else if (send.tag == R.drawable.ic_stop) {
-
-                if (mediaState) {
-                    mediaState = false
-                    message.isEnabled = true
-                    viewModel.mediaRecordStop(requireActivity())
-                    send.tag = R.drawable.ic_audio
-                    send.setImageResource(R.drawable.ic_audio)
-                    send.backgroundTintList =
-                        resources.getColorStateList(R.drawable.stop_recoding_defuld)
-
-                }
-
-
-            } else if (send.tag == R.drawable.ic_send) {
-                if (message.text.isBlank().not() && message.text.isEmpty().not()) {
-                    viewModel.processInput(Input.SendMessage(message.text.toString()))
-                    message.text = null
-
-                }
+            if (message.text.isBlank().not() && message.text.isEmpty().not()) {
+                viewModel.processInput(Input.SendMessage(message.text.toString()))
+                message.text = null
 
             }
 
         }
 
+
+    }
+
+
+    private fun FragmentChatBinding.funRecordBinding(state: Boolean) {
+        gallery.isVisible = state
+        message.isVisible = state
+        recordView.isVisible = state.not()
     }
 
 
@@ -235,4 +222,29 @@ class ChatFragment(
                 ?: return@registerForActivityResult
             viewModel.processInput(Input.SendImage(it, stream))
         }
+
+    private fun b(): Boolean {
+        val recordPermissionAvailable =
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.RECORD_AUDIO
+            ) == PERMISSION_GRANTED
+        return recordPermissionAvailable
+    }
+
+    private fun permissionRequest() {
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf(
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ),
+            0
+        )
+    }
+
+    override fun onDestroyView() {
+        viewModel.mediaRecorderDestroy()
+        super.onDestroyView()
+    }
 }
