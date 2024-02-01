@@ -14,7 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class GroupsFragment :
     BaseFragment<ItemGroupsLayoutBinding>(ItemGroupsLayoutBinding::inflate) {
 
-    private val viewModel: HomeViewModel by viewModel()
+    private val viewModel: HomeGroupsViewModel by viewModel()
 
     private var adapter = GroupsAdapter(listOf(), ::onClickGroup)
 
@@ -38,7 +38,6 @@ class GroupsFragment :
     @SuppressLint("NotifyDataSetChanged")
     private fun renderGroupChats(groupChats: List<GroupChat>) {
 
-        Log.d("TAG", "renderGroupChats: $groupChats ")
         adapter.renderGroupChats(groupChats)
 
     }
@@ -46,7 +45,7 @@ class GroupsFragment :
 
 
     private fun onClickGroup(groups: GroupChat) {
-//        viewModel.processInput(HomeViewModel.Input.OpenChat(chat))
+        viewModel.processInput(HomeGroupsViewModel.Input.OpenGroup(groups))
 
     }
 

@@ -2,8 +2,10 @@ package com.ikpydev.presentation.navigation
 
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import com.ikpydev.domain.model.Chat
+import com.ikpydev.domain.model.GroupChat
 import com.ikpydev.presentation.screens.chat.ChatFragment
 import com.ikpydev.presentation.screens.code.CodeFragment
+import com.ikpydev.presentation.screens.group.GroupFragment
 import com.ikpydev.presentation.screens.home.HomeFragment
 import com.ikpydev.presentation.screens.home.chats.ChatsFragment
 import com.ikpydev.presentation.screens.home.groups.GroupsFragment
@@ -17,6 +19,7 @@ object Screens {
     fun CodeScreen(phone: String) = FragmentScreen { CodeFragment(phone) }
     fun HomeScreen() = FragmentScreen { HomeFragment() }
     fun ChatScreen(chat: Chat) = FragmentScreen { ChatFragment(chat) }
+    fun GroupScreen(group:GroupChat) = FragmentScreen { GroupFragment(group) }
 
     fun ChatsScreen() = FragmentScreen { ChatsFragment() }
     fun GroupsScreen() = FragmentScreen { GroupsFragment() }

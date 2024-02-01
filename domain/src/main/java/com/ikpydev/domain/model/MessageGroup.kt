@@ -9,7 +9,8 @@ data class MessageGroup(
     var time: Date,
     var type: TypeGroup,
     val image:Uri? = null,
-    val voice:Uri? = null
+    val voice:Uri? = null,
+    val avatar:String? = null
 )
 enum class TypeGroup{
     text_in,text_out,image_upload,image_in,image_out,voice_upload,voice_in,voice_out

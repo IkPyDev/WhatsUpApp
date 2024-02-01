@@ -1,13 +1,12 @@
-package com.ikpydev.presentation.screens.chat
+package com.ikpydev.presentation.screens.group
 
 import android.Manifest
-import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,61 +14,73 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.devlomi.record_view.OnRecordListener
-import com.ikpydev.domain.model.Chat
-import com.ikpydev.domain.model.Message
+import com.github.terrakok.cicerone.Router
+import com.ikpydev.domain.model.GroupChat
+import com.ikpydev.domain.model.MessageGroup
+import com.ikpydev.presentation.R
 import com.ikpydev.presentation.base.BaseFragment
 import com.ikpydev.presentation.databinding.FragmentChatBinding
-import com.ikpydev.presentation.screens.chat.ChatViewModel.Input
+import com.ikpydev.presentation.databinding.FragmentGroupBinding
+import com.ikpydev.presentation.screens.chat.ChatViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.InputStream
 
 
-class ChatFragment(
-    private val chat: Chat
-) : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
-    private val viewModel: ChatViewModel by viewModel()
-    private val adapter = ChatAdapter()
-    private var mediaState: Boolean = false
+class GroupFragment(
+    private val group: GroupChat
+) :
+    BaseFragment<FragmentGroupBinding>(FragmentGroupBinding::inflate) {
+        private val viewModel:GroupViewModel by viewModel()
+
+        private lateinit var adapter: GroupAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.processInput(Input.SetChat(chat))
-
-        viewModel.mediaRecorderInit()
-
+        viewModel.processInput(GroupViewModel.Input.SendGroupChat(group))
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
         initUi()
 
 
+    }
+    private fun observeViewModel() {
 
-        viewModel.state.observe(::renderMessage) { it.messages }
 
+        viewModel.state.observe(::renderError) { it.error }
+        viewModel.state.observe(::renderGroup) { it.messagesGroup }
         viewModel.state.observe(::renderLoading) { it.loading }
     }
 
-    private fun renderLoading(loading: Boolean) = with(binding) {
+    private fun renderLoading(loading: Boolean) {
+        Log.d("TAG", "renderLoading: $loading ")
+    }
 
-
-        progress.root.isVisible = loading
+    private fun renderGroup(groupChat: List<MessageGroup>) {
+        adapter.submitList(groupChat)
 
     }
 
-
-
-    private fun renderMessage(messages: List<Message>) {
-        adapter.submitList(messages)
+    private fun renderError(error: Boolean) {
+        Log.d("TAG", "renderError: $error ")
     }
 
-    private fun initUi() = with(binding) {
-
-        Glide.with(root).load(chat.user.avatar).apply(RequestOptions.circleCropTransform())
-            .into(avatar)
-        name.text = chat.user.name
+    private fun initUi()=with(binding) {
+        adapter = GroupAdapter()
         messages.adapter = adapter
-        phone.text = chat.user.phone
+
+        val icon = group.group.avatar ?: R.drawable.ic_groups_24
+        Glide.with(root).load(icon).apply(RequestOptions.circleCropTransform()).into(avatar)
+        name.text = group.group.name
+
+        back.setOnClickListener {
+
+        }
+
 
         recordButton.setRecordView(recordView)
 
@@ -124,6 +135,7 @@ class ChatFragment(
 
 
         gallery.setOnClickListener {
+
             galleryLauncher.launch("image/*")
         }
 
@@ -155,30 +167,20 @@ class ChatFragment(
 
 
             if (message.text.isBlank().not() && message.text.isEmpty().not()) {
-                viewModel.processInput(Input.SendMessage(message.text.toString()))
+                viewModel.processInput(GroupViewModel.Input.SendMessage(message.text.toString()))
                 message.text = null
 
             }
 
         }
-
-
     }
-
-
-    private fun FragmentChatBinding.funRecordBinding(state: Boolean) {
-        gallery.isVisible = state
-        message.isVisible = state
-        recordView.isVisible = state.not()
-    }
-
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             it ?: return@registerForActivityResult
             val stream: InputStream = requireActivity().contentResolver.openInputStream(it)
                 ?: return@registerForActivityResult
-            viewModel.processInput(Input.SendImage(it, stream))
+//            viewModel.processInput(GroupViewModel.Input.SendImage(it, stream))
         }
 
     private fun b(): Boolean {
@@ -186,7 +188,7 @@ class ChatFragment(
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.RECORD_AUDIO
-            ) == PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
         return recordPermissionAvailable
     }
 
@@ -205,48 +207,12 @@ class ChatFragment(
         viewModel.mediaRecorderDestroy()
         super.onDestroyView()
     }
+
+    private fun FragmentGroupBinding.funRecordBinding(state: Boolean) {
+        gallery.isVisible = state
+        message.isVisible = state
+        recordView.isVisible = state.not()
+    }
+
+
 }
-
-
-//    private fun setUpRecord() {
-//        try {
-//            mediaRecord = MediaRecorder()
-//            mediaRecord.setAudioSource(MediaRecorder.AudioSource.MIC)
-//
-//            mediaRecord.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-//            mediaRecord.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-//
-//            val file = File(
-//                Environment.getExternalStorageDirectory().absoluteFile,
-//                "Messenger/Media/Recording"
-//            )
-//            if (!file.exists()) {
-//                file.mkdirs()
-//            }
-//            audioPath = file.absolutePath + File.separator + System.currentTimeMillis() + ".3gp"
-//            mediaRecord.setOutputFile(audioPath)
-//
-//            // Prepare and start recording
-//            mediaRecord.prepare()
-//            mediaRecord.start()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//    }
-
-//    private fun setUpRecord() {
-//        mediaRecord = MediaRecorder()
-//        mediaRecord.setAudioSource(MediaRecorder.AudioSource.MIC)
-//        mediaRecord.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-//        mediaRecord.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-//
-//        val file = File(
-//            Environment.getExternalStorageDirectory().absoluteFile,
-//            "Messenger/Media/Recording"
-//        )
-//        if (!file.exists()) {
-//            file.mkdir()
-//        }
-//        audioPath = file.absolutePath + File.separator + System.currentTimeMillis() + "3gp"
-//        mediaRecord.setOutputFile(audioPath)
-//    }

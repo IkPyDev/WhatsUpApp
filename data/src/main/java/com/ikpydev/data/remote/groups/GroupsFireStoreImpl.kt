@@ -17,15 +17,8 @@ class GroupsFireStoreImpl(
     private val groups = Firebase.firestore.collection("groups")
     override fun createGroups(group: GroupDocument): Completable = Completable.create { emitter ->
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            val data = GroupDocument(
-                id = group.id,
-                create = group.create,
-                name = group.name,
-                avatar = group.avatar,
-                members = group.members
 
-            )
-            groups.document(group.id!!).set(data).addOnFailureListener {
+            groups.document(group.id!!).set(group).addOnFailureListener {
                 emitter.onError(it)
             }.addOnSuccessListener {
                 emitter.onComplete()
@@ -62,7 +55,7 @@ class GroupsFireStoreImpl(
 
 
     override fun getGroups(): Single<List<GroupDocument>> = Single.create { emitter ->
-        groups.whereArrayContains("members", authFirebase.userId!!).get()
+        groups.whereArrayContains("members", authFirebase.userId!!.toString()).get()
             .addOnSuccessListener { documents ->
                 val groupList = documents.mapNotNull { doc ->
                     doc.toObject(GroupDocument::class.java)

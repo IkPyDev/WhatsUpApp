@@ -2,12 +2,14 @@ package com.ikpydev.presentation.screens.home
 
 import com.github.terrakok.cicerone.Router
 import com.ikpydev.domain.model.Chat
-import com.ikpydev.domain.model.Group
 import com.ikpydev.domain.model.GroupChat
+import com.ikpydev.domain.model.UserResult
 import com.ikpydev.domain.usecase.chat.GetChatsUseCase
+import com.ikpydev.domain.usecase.group.CreateGroupsUseCase
 import com.ikpydev.domain.usecase.group.GetGroupsChatsUseCase
 import com.ikpydev.presentation.base.BaseViewModel
 import com.ikpydev.presentation.navigation.Screens.ChatScreen
+import com.ikpydev.presentation.navigation.Screens.GroupScreen
 import com.ikpydev.presentation.screens.home.HomeViewModel.Effect
 import com.ikpydev.presentation.screens.home.HomeViewModel.Input
 import com.ikpydev.presentation.screens.home.HomeViewModel.State
@@ -16,7 +18,9 @@ import com.ikpydev.presentation.screens.home.HomeViewModel.State
 class HomeViewModel(
     private val getChatsUseCase: GetChatsUseCase,
     private val router: Router,
-    private val getGroupsChatsUseCase: GetGroupsChatsUseCase
+    private val getGroupsChatsUseCase: GetGroupsChatsUseCase,
+    private val createGroupsChatsUseCase: CreateGroupsUseCase
+
 
 ) : BaseViewModel<State, Input, Effect>() {
 
@@ -32,9 +36,14 @@ class HomeViewModel(
     sealed class Input {
         object GetChats : Input()
         data class OpenChat(val chat: Chat) : Input()
+        data class UserRe(val userResult: UserResult):Input()
     }
 
     class Effect
+
+    init {
+        getChats()
+    }
 
     override fun getDefaultState() = State()
 
@@ -42,17 +51,21 @@ class HomeViewModel(
         when (input) {
             Input.GetChats -> getChats()
             is Input.OpenChat -> openChat(input.chat)
-            else -> {}
+            is Input.UserRe -> createGroup(input.userResult)
         }
     }
+
+    private fun createGroup(userResult: UserResult) = createGroupsChatsUseCase.invoke(userResult)
+        .subscribe({
+                   getGroupsChats()
+        },{})
 
     private fun openChat(chat: Chat) {
 
         router.navigateTo(ChatScreen(chat))
     }
     private fun openChat(groupChat: GroupChat) {
-
-
+        router.navigateTo(GroupScreen(groupChat))
     }
 
 

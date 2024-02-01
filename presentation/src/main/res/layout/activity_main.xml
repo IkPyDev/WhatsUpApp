@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container"
-        android:background="#FFFFFF"
+        android:background="?attr/colorOnPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

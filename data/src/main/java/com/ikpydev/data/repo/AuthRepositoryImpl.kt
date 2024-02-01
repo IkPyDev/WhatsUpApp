@@ -25,6 +25,8 @@ class AuthRepositoryImpl constructor(
 
     override val isLoggedIn: Boolean
         get() = authFirebase.isLoggedIn
+    override val userId: String
+        get() = authFirebase.userId!!
 
 
 }

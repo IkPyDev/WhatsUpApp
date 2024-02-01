@@ -6,4 +6,5 @@ interface AuthRepository {
     fun sendSmsCode(phone: String): Completable
     fun verify(code: String): Completable
     val isLoggedIn: Boolean
+    val userId :String
 }
