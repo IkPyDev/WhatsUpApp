@@ -42,7 +42,9 @@ import com.ikpydev.domain.usecase.chat.SendVoiceUseCase
 import com.ikpydev.domain.usecase.group.CreateGroupsUseCase
 import com.ikpydev.domain.usecase.group.GetGroupsChatsUseCase
 import com.ikpydev.domain.usecase.group.GetGroupsMessagesUseCase
+import com.ikpydev.domain.usecase.group.SendGroupsImageMessagesUseCase
 import com.ikpydev.domain.usecase.group.SendGroupsMessagesUseCase
+import com.ikpydev.domain.usecase.group.SendGroupsVoiceMessagesUseCase
 import com.ikpydev.domain.usecase.settings.GetInitialScreenUseCase
 import com.ikpydev.domain.usecase.settings.OnboardedUseCase
 import com.ikpydev.presentation.screens.chat.ChatViewModel
@@ -80,7 +82,7 @@ val repositoryModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
     single<ChatRepository> { ChatRepositoryImpl(get(), get(), get(), get(), get(), get()) }
-    single<GroupsChatRepository> { GroupsChatRepositoryImpl(get(), get(),get()) }
+    single<GroupsChatRepository> { GroupsChatRepositoryImpl(get(), get(),get(),get()) }
 }
 
 
@@ -97,8 +99,10 @@ val useCaseModule = module {
     single { SendVoiceUseCase(get()) }
     single { GetGroupsChatsUseCase(get()) }
     single { GetGroupsMessagesUseCase(get()) }
-    single { SendGroupsMessagesUseCase(get()) }
     single { CreateGroupsUseCase(get()) }
+    single { SendGroupsMessagesUseCase(get()) }
+    single { SendGroupsImageMessagesUseCase(get()) }
+    single { SendGroupsVoiceMessagesUseCase(get()) }
 }
 
 val localModel = module {
@@ -128,6 +132,6 @@ val viewModel = module {
     viewModel { ChatViewModel(get(), get(), get(), get()) }
     viewModel { HomeGroupsViewModel(get(), get()) }
     viewModel { HomeChatsViewModel(get(), get()) }
-    viewModel { GroupViewModel(get(),get()) }
+    viewModel { GroupViewModel(get(),get(),get(),get()) }
 }
 

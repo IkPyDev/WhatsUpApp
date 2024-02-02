@@ -14,6 +14,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:tabIndicatorGravity="stretch"
+        app:tabSelectedTextColor="?attr/colorOnPrimary"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@null"
         app:tabIndicator="@drawable/tab_indicator"

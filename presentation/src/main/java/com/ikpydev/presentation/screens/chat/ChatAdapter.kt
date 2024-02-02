@@ -1,21 +1,28 @@
 package com.ikpydev.presentation.screens.chat
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ikpydev.domain.model.Message
 import com.ikpydev.domain.model.Type
+import com.ikpydev.presentation.R
 import com.ikpydev.presentation.databinding.ItemImageInChatBinding
 import com.ikpydev.presentation.databinding.ItemImageOutChatBinding
 import com.ikpydev.presentation.databinding.ItemTextInChatBinding
 import com.ikpydev.presentation.databinding.ItemTextOutChatBinding
 import com.ikpydev.presentation.databinding.ItemVoiceInChatBinding
 import com.ikpydev.presentation.databinding.ItemVoiceOutChatBinding
+import com.ikpydev.presentation.utils.showImageDialog
 
 class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
+
+    var isLoading = false
 
     inner class TextInViewHolder(private val binding: ItemTextInChatBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -35,6 +42,9 @@ class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) = with(binding) {
             Glide.with(root).load(message.image).into(image)
+            image.setOnClickListener {
+                showImageDialog(message.image!!,root.context)
+            }
         }
     }
 
@@ -56,6 +66,9 @@ class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) = with(binding) {
             Glide.with(root).load(message.image).into(image)
+            image.setOnClickListener {
+                showImageDialog(message.image!!,root.context)
+            }
         }
     }
 
@@ -116,6 +129,7 @@ class ChatAdapter : ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_UTIL) {
             is VoiceOutViewHolder -> holder.bind(getItem(position))
             is VoiceInViewHolder -> holder.bind(getItem(position))
         }
+
     }
 
     override fun getItemViewType(position: Int) = getItem(position).type.ordinal

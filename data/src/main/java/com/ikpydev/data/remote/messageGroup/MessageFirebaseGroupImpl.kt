@@ -10,7 +10,7 @@ import java.util.UUID
 
 class MessageFirebaseGroupImpl : MessagesFireBaseGroup {
 
-    val messages = Firebase.firestore.collection("groups")
+    val messages = Firebase.firestore.collection("messagesGroup")
     override fun senMessage(
         groupId: String,
         userId: String,
@@ -31,14 +31,14 @@ class MessageFirebaseGroupImpl : MessagesFireBaseGroup {
             .addOnSuccessListener { emitter.onComplete() }
     }
 
-    override fun senMessage(groupId: String, userId: String, image: Uri): Completable =
+    override fun senMessageImage(groupId: String, userId: String, image: Uri): Completable =
         Completable.create { emitter ->
             val messageDocument = MessageGroupDocument(
                 id = UUID.randomUUID().toString(),
                 image = image.toString(),
                 time = Date(),
-                group = listOf(groupId, userId).sorted().joinToString(),
-                from = groupId,
+                group = groupId,
+                from = userId,
                 to = userId
 
             )
@@ -53,8 +53,8 @@ class MessageFirebaseGroupImpl : MessagesFireBaseGroup {
                 id = UUID.randomUUID().toString(),
                 voice = voice.toString(),
                 time = Date(),
-                group = listOf(groupId, userId).sorted().joinToString(),
-                from = groupId,
+                group = groupId,
+                from = userId,
                 to = userId
 
             )

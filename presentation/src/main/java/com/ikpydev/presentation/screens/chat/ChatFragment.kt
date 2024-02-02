@@ -52,8 +52,7 @@ class ChatFragment(
 
     private fun renderLoading(loading: Boolean) = with(binding) {
 
-
-        progress.root.isVisible = loading
+        Log.d("TAG", "renderLoading: $loading")
 
     }
 

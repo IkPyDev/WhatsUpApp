@@ -37,6 +37,7 @@ class GroupFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.processInput(GroupViewModel.Input.SendGroupChat(group))
+        viewModel.mediaRecorderInit()
     }
 
 
@@ -180,7 +181,7 @@ class GroupFragment(
             it ?: return@registerForActivityResult
             val stream: InputStream = requireActivity().contentResolver.openInputStream(it)
                 ?: return@registerForActivityResult
-//            viewModel.processInput(GroupViewModel.Input.SendImage(it, stream))
+            viewModel.processInput(GroupViewModel.Input.SendImage(it, stream))
         }
 
     private fun b(): Boolean {
@@ -213,6 +214,8 @@ class GroupFragment(
         message.isVisible = state
         recordView.isVisible = state.not()
     }
+
+
 
 
 }

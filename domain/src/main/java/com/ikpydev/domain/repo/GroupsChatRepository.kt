@@ -15,7 +15,7 @@ interface GroupsChatRepository {
     fun getGroupsChats(): Single<List<GroupChat>>
     fun createGroup(userResult: UserResult):Completable
     fun sendMessage(to: GroupChat, message: String): Completable
-    fun sendMessage(to: GroupChat, image: InputStream): Completable
+    fun sendMessageImage(to: GroupChat, image: InputStream): Completable
     fun sendMessageVoice(to: GroupChat, voice: InputStream): Completable
     fun getMessage(groupId: String): Observable<List<MessageGroup>>
 

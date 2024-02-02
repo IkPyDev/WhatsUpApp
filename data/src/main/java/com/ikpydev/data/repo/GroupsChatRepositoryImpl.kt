@@ -3,6 +3,7 @@ package com.ikpydev.data.repo
 import com.ikpydev.data.mapper.toGroup
 import com.ikpydev.data.mapper.toMessageGroup
 import com.ikpydev.data.remote.auth.AuthFirebase
+import com.ikpydev.data.remote.files.ImageStorage
 import com.ikpydev.data.remote.groups.GroupsFireStore
 import com.ikpydev.data.remote.groups.model.GroupDocument
 import com.ikpydev.data.remote.messageGroup.MessagesFireBaseGroup
@@ -21,7 +22,8 @@ import java.util.UUID
 class GroupsChatRepositoryImpl(
     private val groupsFireStore: GroupsFireStore,
     private val authFirebase: AuthFirebase,
-    private val messagesFireBaseGroup: MessagesFireBaseGroup
+    private val messagesFireBaseGroup: MessagesFireBaseGroup,
+    private val imageStorage: ImageStorage
 
 ) : GroupsChatRepository {
     override fun getGroupsChats(): Single<List<GroupChat>> =
@@ -58,13 +60,28 @@ class GroupsChatRepositoryImpl(
             .observeOn(AndroidSchedulers.mainThread())
 
 
-    override fun sendMessage(to: GroupChat, image: InputStream): Completable {
-        TODO("Not yet implemented")
-    }
+    override fun sendMessageImage(to: GroupChat, image: InputStream): Completable =
+        imageStorage.upload(image).flatMapCompletable {
+            messagesFireBaseGroup.senMessageImage(
+                to.group._id!!,
+                authFirebase.userId!!.toString(),
+                it
+            )
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 
-    override fun sendMessageVoice(to: GroupChat, voice: InputStream): Completable {
-        TODO("Not yet implemented")
-    }
+
+    override fun sendMessageVoice(to: GroupChat, voice: InputStream): Completable =
+        imageStorage.upload(voice).flatMapCompletable {
+            messagesFireBaseGroup.senMessageVoice(
+                to.group._id!!,
+                authFirebase.userId!!.toString(),
+                it
+            )
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 
     override fun getMessage(groupId: String): Observable<List<MessageGroup>> =
         messagesFireBaseGroup.getMessage(groupId).map { messagesGroups ->

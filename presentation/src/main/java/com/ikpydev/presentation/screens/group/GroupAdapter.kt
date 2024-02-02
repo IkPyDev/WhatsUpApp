@@ -11,12 +11,15 @@ import com.ikpydev.domain.model.Type
 import com.ikpydev.domain.model.TypeGroup
 import com.ikpydev.presentation.R
 import com.ikpydev.presentation.databinding.ItemImageInChatBinding
+import com.ikpydev.presentation.databinding.ItemImageInGroupBinding
 import com.ikpydev.presentation.databinding.ItemImageOutChatBinding
 import com.ikpydev.presentation.databinding.ItemTextInChatBinding
 import com.ikpydev.presentation.databinding.ItemTextInGroupBinding
 import com.ikpydev.presentation.databinding.ItemTextOutChatBinding
 import com.ikpydev.presentation.databinding.ItemVoiceInChatBinding
+import com.ikpydev.presentation.databinding.ItemVoiceInGroupBinding
 import com.ikpydev.presentation.databinding.ItemVoiceOutChatBinding
+import com.ikpydev.presentation.utils.showImageDialog
 
 class GroupAdapter : ListAdapter<MessageGroup, RecyclerView.ViewHolder>(DIFF_UTIL) {
 
@@ -41,6 +44,9 @@ class GroupAdapter : ListAdapter<MessageGroup, RecyclerView.ViewHolder>(DIFF_UTI
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: MessageGroup) = with(binding) {
             Glide.with(root).load(message.image).into(image)
+            image.setOnClickListener {
+                showImageDialog(message.image!!,root.context)
+            }
         }
     }
 
@@ -51,17 +57,24 @@ class GroupAdapter : ListAdapter<MessageGroup, RecyclerView.ViewHolder>(DIFF_UTI
         }
     }
 
-    inner class VoiceInViewHolder(private val binding: ItemVoiceInChatBinding) :
+    inner class GroupVoiceInViewHolder(private val binding: ItemVoiceInGroupBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: MessageGroup) = with(binding) {
             voicePlayerView.setAudio(message.voice.toString())
+            val avatar = message.avatar ?: R.drawable.ic_groups_24
+            Glide.with(root).load(avatar).into(binding.avatar)
         }
     }
 
-    inner class ImageInViewHolder(private val binding: ItemImageInChatBinding) :
+    inner class ImageInViewHolder(private val binding: ItemImageInGroupBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: MessageGroup) = with(binding) {
             Glide.with(root).load(message.image).into(image)
+            val avatar = message.avatar ?: R.drawable.ic_groups_24
+            Glide.with(root).load(avatar).into(binding.avatar)
+            image.setOnClickListener {
+                showImageDialog(message.image!!,root.context)
+            }
         }
     }
 
@@ -92,7 +105,7 @@ class GroupAdapter : ListAdapter<MessageGroup, RecyclerView.ViewHolder>(DIFF_UTI
             )
 
             TypeGroup.image_in -> ImageInViewHolder(
-                ItemImageInChatBinding.inflate(inflater, parent, false)
+                ItemImageInGroupBinding.inflate(inflater, parent, false)
             )
 
             TypeGroup.image_out -> ImageUploadViewHolder(
@@ -103,8 +116,8 @@ class GroupAdapter : ListAdapter<MessageGroup, RecyclerView.ViewHolder>(DIFF_UTI
                 ItemVoiceOutChatBinding.inflate(inflater, parent, false)
             )
 
-            TypeGroup.voice_in -> VoiceInViewHolder(
-                ItemVoiceInChatBinding.inflate(inflater, parent, false)
+            TypeGroup.voice_in -> GroupVoiceInViewHolder(
+                ItemVoiceInGroupBinding.inflate(inflater, parent, false)
             )
 
             TypeGroup.voice_out -> VoiceOutViewHolder(
@@ -120,7 +133,7 @@ class GroupAdapter : ListAdapter<MessageGroup, RecyclerView.ViewHolder>(DIFF_UTI
             is ImageUploadViewHolder -> holder.bind(getItem(position))
             is ImageInViewHolder -> holder.bind(getItem(position))
             is VoiceOutViewHolder -> holder.bind(getItem(position))
-            is VoiceInViewHolder -> holder.bind(getItem(position))
+            is GroupVoiceInViewHolder -> holder.bind(getItem(position))
         }
     }
 

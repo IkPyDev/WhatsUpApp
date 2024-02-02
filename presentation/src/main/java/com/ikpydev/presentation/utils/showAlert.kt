@@ -1,21 +1,27 @@
 package com.ikpydev.presentation.utils
 
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
+import android.net.Uri
 import android.text.InputType
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler
+import com.bumptech.glide.Glide
 import com.ikpydev.domain.model.Chat
 import com.ikpydev.domain.model.Group
 import com.ikpydev.domain.model.User
 import com.ikpydev.domain.model.UserResult
-import com.ikpydev.presentation.databinding.AddContactBinding
+import com.ikpydev.presentation.R
 import java.util.UUID
 
 
@@ -112,6 +118,30 @@ class DialogHelper(private val context: Context) {
         builder.create().show()
     }
 
+
+
+}
+
+@SuppressLint("ClickableViewAccessibility")
+fun showImageDialog(uri: Uri, imageContext: Context) {
+    val dialog = Dialog(imageContext, R.style.Theme_WhatsUpApp)
+    dialog.setContentView(R.layout.dialog_fullscreen_image)
+    val imageView = dialog.findViewById<ImageView>(R.id.fullscreen_image)
+    val backButton = dialog.findViewById<ImageView>(R.id.back_button)
+
+    // Glide kutubxonasini ishlatib rasmni yuklash
+    Glide.with(imageContext).load(uri).into(imageView)
+
+    // ImageView'ga zoom in/zoom out qilish imkoniyatini qo'shish
+    imageView.setOnTouchListener(ImageMatrixTouchHandler(imageContext))
+
+    // Orqaga qaytish tugmasini sozlash
+    backButton.setImageResource(R.drawable.ic_back)
+    backButton.setOnClickListener {
+        dialog.dismiss()
+    }
+
+    dialog.show()
 }
 
 

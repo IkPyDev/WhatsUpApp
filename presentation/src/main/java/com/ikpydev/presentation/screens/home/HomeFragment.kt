@@ -70,8 +70,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun initUi() = with(binding) {
 
-        tabMode.addTab(tabMode.newTab().setText(R.string.chats).setIcon(R.drawable.ic_person))
-        tabMode.addTab(tabMode.newTab().setText(R.string.groups).setIcon(R.drawable.ic_groups_24))
+        tabMode.addTab(tabMode.newTab().setText(R.string.chats))
+        tabMode.addTab(tabMode.newTab().setText(R.string.groups))
 
         viewpager.adapter = tabAdapter
         tabMode.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
@@ -101,7 +101,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 dialogHelper.showUserDialog2(userData,::newGroups)
 
             }else {
-                Toast.makeText(requireContext(), "One Create Group", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Create Group", Toast.LENGTH_SHORT).show()
             }
         }
 

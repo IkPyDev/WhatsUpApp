@@ -4,10 +4,17 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:id="@+id/avatar"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/voicePlayerView"
+        app:layout_constraintStart_toStartOf="parent"/>
     <me.jagar.chatvoiceplayerlibrary.VoicePlayerView
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toEndOf="@id/avatar"
+        android:layout_marginStart="10dp"
 
         android:id="@+id/voicePlayerView"
         android:layout_width="wrap_content"
@@ -27,6 +34,7 @@
 
         app:seekBarThumbColor="@color/blue"
         app:playProgressbarColor="#49A1E8"/>
+
 
 
 

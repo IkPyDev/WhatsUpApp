@@ -71,6 +71,7 @@
         android:layout_height="wrap_content"
         android:elevation="4dp"
         android:visibility="gone"
+        android:progressTint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@id/sign"
         app:layout_constraintEnd_toEndOf="@id/sign"
         app:layout_constraintStart_toStartOf="@id/sign"

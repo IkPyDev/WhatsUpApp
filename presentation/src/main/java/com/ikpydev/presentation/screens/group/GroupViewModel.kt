@@ -1,22 +1,35 @@
 package com.ikpydev.presentation.screens.group
 
 import android.app.Activity
+import android.content.Context
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import androidx.core.net.toUri
 import com.ikpydev.domain.model.Chat
 import com.ikpydev.domain.model.GroupChat
+import com.ikpydev.domain.model.Message
 import com.ikpydev.domain.model.MessageGroup
+import com.ikpydev.domain.model.Type
+import com.ikpydev.domain.model.TypeGroup
 import com.ikpydev.domain.usecase.group.GetGroupsMessagesUseCase
+import com.ikpydev.domain.usecase.group.SendGroupsImageMessagesUseCase
 import com.ikpydev.domain.usecase.group.SendGroupsMessagesUseCase
+import com.ikpydev.domain.usecase.group.SendGroupsVoiceMessagesUseCase
 import com.ikpydev.presentation.base.BaseViewModel
+import com.ikpydev.presentation.screens.chat.ChatViewModel
 import com.ikpydev.presentation.screens.group.GroupViewModel.*
 import java.io.File
+import java.io.InputStream
 import java.util.Date
 
 class GroupViewModel(
     private val getGroupsMessagesUseCase: GetGroupsMessagesUseCase,
-    private val sendGroupsMessagesUseCase: SendGroupsMessagesUseCase
+    private val sendGroupsMessagesUseCase: SendGroupsMessagesUseCase,
+    private val sendGroupsImageMessagesUseCase: SendGroupsImageMessagesUseCase,
+    private val sendGroupsVoiceMessagesUseCase: SendGroupsVoiceMessagesUseCase
+
 ):BaseViewModel<State,Input,Effect>() {
 
     private var mediaRecord: MediaRecorder? = null
@@ -34,8 +47,8 @@ class GroupViewModel(
         object GetMessage : Input()
         data class SendMessage(val message: String) : Input()
         data class SendGroupChat(val groupsChat: GroupChat):Input()
-//        data class SendImage(val image: Uri, val stream: InputStream) : Input()
-//        data class SendVoice(val voice: Uri, val stream: InputStream) : Input()
+        data class SendImage(val image: Uri, val stream: InputStream) : Input()
+        data class SendVoice(val voice: Uri, val stream: InputStream) : Input()
         data class SetGroupChat(val groupsChat: GroupChat) : Input()
     }
 
@@ -48,8 +61,8 @@ class GroupViewModel(
             Input.GetMessage -> getMessage()
             is Input.SendMessage -> senMessage(input.message)
             is Input.SetGroupChat -> setUser(input.groupsChat)
-//            is Input.SendImage -> sendImage(input.image, input.stream)
-//            is Input.SendVoice -> sendVoice(input.voice, input.stream)
+            is Input.SendImage -> sendImage(input.image, input.stream)
+            is Input.SendVoice -> sendVoice(input.voice, input.stream)
             is Input.SendGroupChat -> setGroupChat(input.groupsChat)
         }
     }
@@ -59,6 +72,32 @@ class GroupViewModel(
             Log.d("TAG", "senMessage: ${it.message} ")
              emitEffects(Effect.ErrorSending)
         })
+
+    private fun sendImage(image: Uri, stream: InputStream) {
+
+        val messageGroup =
+            MessageGroup(id = image.toString(), time = Date(), type = TypeGroup.image_upload, image = image)
+        val messages = current.messagesGroup.toMutableList()
+        messages.add(messageGroup)
+        updateState { it.copy(messagesGroup = messages) }
+        sendGroupsImageMessagesUseCase(current.groupsChat!!, stream)
+            .subscribe({}, {})
+
+    }
+
+    private fun sendVoice(voice: Uri, stream: InputStream) {
+
+        val messageGroup =
+            MessageGroup(id = voice.toString(), time = Date(), type = TypeGroup.voice_upload, voice = voice)
+        val messages = current.messagesGroup.toMutableList()
+        messages.add(messageGroup)
+        updateState { it.copy(messagesGroup = messages) }
+
+        sendGroupsVoiceMessagesUseCase(current.groupsChat!!, stream)
+            .subscribe({}, {})
+
+    }
+
 
     private fun setGroupChat(groupChat: GroupChat) {
         updateState { it.copy(groupsChat = groupChat) }
@@ -119,7 +158,7 @@ class GroupViewModel(
             mediaRecord?.stop()
             mediaRecord?.reset()
             mediaRecord?.release()
-//            sendVoiceMes(File(audioPath).toUri(), requireActivity)
+            sendVoiceMes(File(audioPath).toUri(), requireActivity)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -156,5 +195,11 @@ class GroupViewModel(
     fun mediaRecorderDestroy() {
         mediaRecord?.release()
         mediaRecord = null
+    }
+
+    private fun sendVoiceMes(uri: Uri?, context: Context) {
+        uri ?: return
+        val stream: InputStream = context.contentResolver.openInputStream(uri) ?: return
+        processInput(Input.SendVoice(uri, stream))
     }
 }
